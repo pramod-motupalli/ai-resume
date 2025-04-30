@@ -2,12 +2,19 @@ import { useState } from "react";
 
 export default function ResumeForm({ formData, setFormData }) {
   const [experienceInput, setExperienceInput] = useState("");
-  const [educationInput, setEducationInput] = useState("");
   const [skillInput, setSkillInput] = useState("");
   const [languageInput, setLanguageInput] = useState({ name: "", level: 3 });
   const [certificationInput, setCertificationInput] = useState("");
   const [projectInput, setProjectInput] = useState({ name: "", git: "" });
   const [achievementInput, setAchievementInput] = useState("");
+  // Education fields as an object
+  const [educationInput, setEducationInput] = useState({
+    institution: "",
+    degree: "",
+    from: "",
+    to: "",
+    aggregate: ""
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -17,292 +24,157 @@ export default function ResumeForm({ formData, setFormData }) {
   const handleProfilePicUpload = (e) => {
     const file = e.target.files[0];
     const url = URL.createObjectURL(file);
-    setFormData({ ...formData, profilePic: url });
-  };
-
-  const addExperience = () => {
-    if (experienceInput) {
-      setFormData({
-        ...formData,
-        experiences: [...formData.experiences, experienceInput],
-      });
-      setExperienceInput("");
-    }
+    setFormData({ ...formData, photo: url });
   };
 
   const addEducation = () => {
-    if (educationInput) {
-      setFormData({
-        ...formData,
-        education: [...formData.education, educationInput],
-      });
-      setEducationInput("");
-    }
-  };
-
-  const addSkill = () => {
-    if (skillInput) {
-      setFormData({
-        ...formData,
-        skills: [...formData.skills, skillInput],
-      });
-      setSkillInput("");
-    }
-  };
-
-  const addLanguage = () => {
-    if (languageInput.name) {
-      setFormData({
-        ...formData,
-        languages: [...formData.languages, languageInput],
-      });
-      setLanguageInput({ name: "", level: 3 });
-    }
-  };
-
-  const addCertification = () => {
-    if (certificationInput) {
-      setFormData({
-        ...formData,
-        certifications: [...formData.certifications, certificationInput],
-      });
-      setCertificationInput("");
-    }
-  };
-
-  const addProject = () => {
-    if (projectInput.name) {
-      setFormData({
-        ...formData,
-        projects: [...formData.projects, projectInput],
-      });
-      setProjectInput({ name: "", git: "" });
-    }
-  };
-
-  const addAchievement = () => {
-    if (achievementInput) {
-      setFormData({
-        ...formData,
-        achievements: [...formData.achievements, achievementInput],
-      });
-      setAchievementInput("");
-    }
+    setFormData({
+      ...formData,
+      education: [...formData.education, educationInput]
+    });
+    setEducationInput({ institution: "", degree: "", from: "", to: "", aggregate: "" });
   };
 
   return (
-    <div className="flex flex-col space-y-4">
-      <h2 className="text-2xl font-bold text-cyan-600">Resume Builder</h2>
-
-      {/* Personal Information */}
-      <input
-        type="text"
-        name="name"
-        placeholder="Full Name"
-        className="input"
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        name="title"
-        placeholder="Title"
-        className="input"
-        onChange={handleInputChange}
-      />
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        className="input"
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        name="linkedin"
-        placeholder="LinkedIn URL"
-        className="input"
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        name="github"
-        placeholder="GitHub URL"
-        className="input"
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        name="location"
-        placeholder="Location"
-        className="input"
-        onChange={handleInputChange}
-      />
-
-      {/* Profile Picture Upload */}
-      <input type="file" accept="image/*" onChange={handleProfilePicUpload} />
-
-      {/* Professional Summary */}
-      <textarea
-        name="summary"
-        rows="3"
-        placeholder="Professional Summary"
-        className="input"
-        onChange={handleInputChange}
-      ></textarea>
+    <form className="flex flex-col space-y-6">
+      {/* Personal Info */}
+      <Section title="Personal Info">
+        <div className="flex flex-col space-y-4">
+          <input type="text" name="name" placeholder="Full Name" className="input" onChange={handleInputChange} />
+          <input type="text" name="title" placeholder="Title" className="input" onChange={handleInputChange} />
+          <input type="email" name="email" placeholder="Email" className="input" onChange={handleInputChange} />
+          <input type="text" name="location" placeholder="Location" className="input" onChange={handleInputChange} />
+          <input type="text" name="linkedin" placeholder="LinkedIn URL" className="input" onChange={handleInputChange} />
+          <input type="text" name="github" placeholder="GitHub URL" className="input" onChange={handleInputChange} />
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Profile Picture</label>
+            <input type="file" accept="image/*" onChange={handleProfilePicUpload} className="mt-1" />
+          </div>
+          <textarea name="summary" rows="3" placeholder="Professional Summary" className="input w-full" onChange={handleInputChange}></textarea>
+        </div>
+      </Section>
 
       {/* Experience */}
-      <div>
-        <h3 className="text-lg font-semibold text-cyan-700">Experience</h3>
-        <input
-          type="text"
-          placeholder="Add Experience"
-          className="input"
+      <Section title="Experience">
+        <ListInput
           value={experienceInput}
-          onChange={(e) => setExperienceInput(e.target.value)}
+          onChange={(v) => setExperienceInput(v)}
+          onAdd={() => { setFormData({ ...formData, experiences: [...formData.experiences, experienceInput] }); setExperienceInput(""); }}
+          placeholder="Add Experience"
         />
-        <button
-          className="btn bg-teal-500 text-white px-4 py-2 rounded mt-2"
-          onClick={addExperience}
-        >
-          Add Experience
-        </button>
-      </div>
+      </Section>
 
-      {/* Projects */}
-      <div>
-        <h3 className="text-lg font-semibold text-cyan-700">Projects</h3>
-        <input
-          type="text"
-          placeholder="Project Name"
-          className="input"
-          value={projectInput.name}
-          onChange={(e) =>
-            setProjectInput({ ...projectInput, name: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="GitHub Link"
-          className="input"
-          value={projectInput.git}
-          onChange={(e) =>
-            setProjectInput({ ...projectInput, git: e.target.value })
-          }
-        />
-        <button
-          className="btn bg-cyan-500 text-white px-4 py-2 rounded mt-2"
-          onClick={addProject}
-        >
-          Add Project
-        </button>
-      </div>
-
-      {/* Education */}
-      <div>
-        <h3 className="text-lg font-semibold text-cyan-700">Education</h3>
-        <input
-          type="text"
-          placeholder="Add Education"
-          className="input"
-          value={educationInput}
-          onChange={(e) => setEducationInput(e.target.value)}
-        />
-        <button
-          className="btn bg-teal-500 text-white px-4 py-2 rounded mt-2"
-          onClick={addEducation}
-        >
-          Add Education
-        </button>
-      </div>
+      {/* Education with detailed inputs */}
+      <Section title="Education">
+        <div className="flex flex-col space-y-3">
+          <input
+            type="text"
+            placeholder="Institution / College Name"
+            className="input"
+            value={educationInput.institution}
+            onChange={(e) => setEducationInput({ ...educationInput, institution: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Degree (e.g., B.Sc Computer Science)"
+            className="input"
+            value={educationInput.degree}
+            onChange={(e) => setEducationInput({ ...educationInput, degree: e.target.value })}
+          />
+          <div className="flex space-x-4">
+            <input
+              type="text"
+              placeholder="From Year (e.g., 2015)"
+              className="input w-1/2"
+              value={educationInput.from}
+              onChange={(e) => setEducationInput({ ...educationInput, from: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="To Year (e.g., 2019)"
+              className="input w-1/2"
+              value={educationInput.to}
+              onChange={(e) => setEducationInput({ ...educationInput, to: e.target.value })}
+            />
+          </div>
+          <input
+            type="text"
+            placeholder="Aggregate / GPA (e.g., 3.8)"
+            className="input"
+            value={educationInput.aggregate}
+            onChange={(e) => setEducationInput({ ...educationInput, aggregate: e.target.value })}
+          />
+          <button
+            type="button"
+            className="btn bg-cyan-500 text-white px-4 py-2 rounded self-start"
+            onClick={addEducation}
+          >
+            Add Education
+          </button>
+        </div>
+      </Section>
 
       {/* Skills */}
-      <div>
-        <h3 className="text-lg font-semibold text-cyan-700">Skills</h3>
-        <input
-          type="text"
-          placeholder="Add Skill"
-          className="input"
+      <Section title="Skills">
+        <ListInput
           value={skillInput}
-          onChange={(e) => setSkillInput(e.target.value)}
+          onChange={(v) => setSkillInput(v)}
+          onAdd={() => { setFormData({ ...formData, skills: [...formData.skills, skillInput] }); setSkillInput(""); }}
+          placeholder="Add Skill"
         />
-        <button
-          className="btn bg-teal-500 text-white px-4 py-2 rounded mt-2"
-          onClick={addSkill}
-        >
-          Add Skill
-        </button>
-      </div>
+      </Section>
 
       {/* Languages */}
-      <div>
-        <h3 className="text-lg font-semibold text-cyan-700">Languages</h3>
-        <input
-          type="text"
-          placeholder="Language"
-          className="input"
-          value={languageInput.name}
-          onChange={(e) =>
-            setLanguageInput({ ...languageInput, name: e.target.value })
-          }
-        />
-        <div className="flex space-x-1">
-          {[...Array(5)].map((_, index) => (
-            <button
-              key={index}
-              className={`${
-                index < languageInput.level ? "text-yellow-500" : "text-gray-300"
-              }`}
-              onClick={() =>
-                setLanguageInput({ ...languageInput, level: index + 1 })
-              }
-            >
-              ★
-            </button>
-          ))}
+      <Section title="Languages">
+        <div className="flex flex-col space-y-2">
+          <input type="text" placeholder="Language" className="input" value={languageInput.name} onChange={(e) => setLanguageInput({ ...languageInput, name: e.target.value })} />
+          <div className="flex space-x-1">
+            {[...Array(5)].map((_, idx) => (
+              <button key={idx} type="button" className={idx < languageInput.level ? "text-yellow-500" : "text-gray-300"} onClick={() => setLanguageInput({ ...languageInput, level: idx + 1 })}>★</button>
+            ))}
+          </div>
+          <button type="button" className="btn bg-cyan-500 text-white px-4 py-2 rounded self-start" onClick={() => { setFormData({ ...formData, languages: [...formData.languages, languageInput] }); setLanguageInput({ name: "", level: 3 }); }}>Add Language</button>
         </div>
-        <button
-          className="btn bg-cyan-500 text-white px-4 py-2 rounded mt-2"
-          onClick={addLanguage}
-        >
-          Add Language
-        </button>
-      </div>
+      </Section>
 
       {/* Certifications */}
-      <div>
-        <h3 className="text-lg font-semibold text-cyan-700">Certifications</h3>
-        <input
-          type="text"
-          placeholder="Add Certification"
-          className="input"
+      <Section title="Certifications">
+        <ListInput
           value={certificationInput}
-          onChange={(e) => setCertificationInput(e.target.value)}
+          onChange={(v) => setCertificationInput(v)}
+          onAdd={() => { setFormData({ ...formData, certifications: [...formData.certifications, certificationInput] }); setCertificationInput(""); }}
+          placeholder="Add Certification"
         />
-        <button
-          className="btn bg-teal-500 text-white px-4 py-2 rounded mt-2"
-          onClick={addCertification}
-        >
-          Add Certification
-        </button>
-      </div>
+      </Section>
 
       {/* Achievements */}
-      <div>
-        <h3 className="text-lg font-semibold text-cyan-700">Achievements</h3>
-        <input
-          type="text"
-          placeholder="Add Achievement"
-          className="input"
+      <Section title="Achievements">
+        <ListInput
           value={achievementInput}
-          onChange={(e) => setAchievementInput(e.target.value)}
+          onChange={(v) => setAchievementInput(v)}
+          onAdd={() => { setFormData({ ...formData, achievements: [...formData.achievements, achievementInput] }); setAchievementInput(""); }}
+          placeholder="Add Achievement"
         />
-        <button
-          className="btn bg-teal-500 text-white px-4 py-2 rounded mt-2"
-          onClick={addAchievement}
-        >
-          Add Achievement
-        </button>
-      </div>
+      </Section>
+    </form>
+  );
+}
+
+// Helper components
+function Section({ title, children }) {
+  return (
+    <div className="bg-gray-50 p-4 rounded-lg">
+      <h3 className="text-lg font-semibold text-cyan-700 border-b pb-2 mb-3">{title}</h3>
+      {children}
+    </div>
+  );
+}
+
+function ListInput({ value, onChange, onAdd, placeholder }) {
+  return (
+    <div className="flex flex-col">
+      <input type="text" placeholder={placeholder} className="input" value={value} onChange={(e) => onChange(e.target.value)} />
+      <button type="button" className="btn bg-teal-500 text-white px-4 py-2 rounded mt-2 self-start" onClick={onAdd}>Add</button>
     </div>
   );
 }

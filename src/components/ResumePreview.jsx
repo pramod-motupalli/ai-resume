@@ -3,180 +3,160 @@ import { Mail, Linkedin, MapPin, Github } from 'lucide-react';
 
 export default function ResumePreview({ formData }) {
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-      {/* Header Strip */}
-      <div className="px-6 py-4">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-teal-600">{formData.name || "Your Name"}</h1>
-          <p className="text-lg">{formData.title || "Your Title"}</p>
+    <div className="bg-white shadow-xl rounded-2xl overflow-hidden p-8">
+      {/* Header */}
+      <div className="grid grid-cols-2 items-center mb-8">
+        <div>
+          <h1 className="text-5xl font-extrabold text-black">{formData.name || 'Your Name'}</h1>
+          <p className="text-xl text-blue-600 mt-2">{formData.title || 'Your Title | Subtitle'}</p>
+          <div className="flex flex-wrap gap-6 text-gray-600 mt-4">
+            <div className="flex items-center gap-2"><Mail className="w-5 h-5" />{formData.email}</div>
+            <div className="flex items-center gap-2"><Linkedin className="w-5 h-5" /><a href={formData.linkedin} className="hover:underline">{formData.linkedin}</a></div>
+            <div className="flex items-center gap-2"><Github className="w-5 h-5" /><a href={formData.github} className="hover:underline">{formData.github}</a></div>
+            <div className="flex items-center gap-2"><MapPin className="w-5 h-5" />{formData.location}</div>
+          </div>
+        </div>
+        <div className="flex justify-end">
+          {formData.photo && (
+            <img src={formData.photo} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
+          )}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-6 space-y-6">
-        {/* Contact Info with Icons Side by Side */}
-        <div className="text-gray-700 flex flex-wrap gap-6">
-          <div className="flex items-center gap-2">
-            <Mail className="w-5 h-5 text-teal-600" />
-            <span>{formData.email || "your.email@example.com"}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Linkedin className="w-5 h-5 text-teal-600" />
-            <a
-              href={formData.linkedin || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {formData.linkedin || "linkedin.com/in/yourprofile"}
-            </a>
-          </div>
-          <div className="flex items-center gap-2">
-            <Github className="w-5 h-5 text-teal-600" />
-            <a
-              href={formData.github || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {formData.github || "github.com/yourusername"}
-            </a>
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-teal-600" />
-            <span>{formData.location || "Your City, Country"}</span>
-          </div>
-        </div>
+      {/* Main two-column grid always active */}
+      <div className="grid grid-cols-2 gap-8">
+        {/* Left Column */}
+        <div className="space-y-6">
+          {/* Skills */}
+          {formData.skills?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold border-b pb-2 mb-2">Skills</h2>
+              <div className="flex flex-wrap gap-2">
+                {formData.skills.map((skill, i) => (
+                  <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
 
-        {/* Summary */}
-        {formData.summary && (
-          <section>
-            <h2 className="text-xl font-semibold text-teal-700 mb-2">Summary</h2>
-            <p className="text-gray-800">{formData.summary}</p>
-          </section>
-        )}
+          {/* Strengths */}
+          {formData.strengths?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold border-b pb-2 mb-2">Strengths</h2>
+              <ul className="space-y-4">
+                {formData.strengths.map((s, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <s.icon className="w-6 h-6 text-blue-600 mt-1" />
+                    <div>
+                      <p className="font-medium text-gray-900">{s.title}</p>
+                      <p className="text-gray-700 text-sm">{s.detail}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
-        {/* Experience */}
-        {formData.experiences?.length > 0 && (
-          <section>
-            <h2 className="text-xl font-semibold text-teal-700 mb-2">Experience</h2>
-            <ul className="list-disc list-inside text-gray-800 space-y-1">
-              {formData.experiences.map((exp, idx) => (
-                <li key={idx}>{exp}</li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Projects */}
-        {formData.projects?.length > 0 && (
-          <section>
-            <h2 className="text-xl font-semibold text-teal-700 mb-2">Projects</h2>
-            <ul className="list-disc list-inside text-gray-800 space-y-1">
-              {formData.projects.map((proj, idx) => (
-                <li key={idx}>
-                  <span className="font-medium">{proj.name}</span>{' '}
-                  {proj.git && (
-                    <a
-                      href={proj.git}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-teal-600 hover:underline"
-                    >
-                      [GitHub]
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Education */}
-        {formData.education?.length > 0 && (
-          <section>
-            <h2 className="text-xl font-semibold text-teal-700 mb-2">Education</h2>
-            <ul className="list-disc list-inside text-gray-800 space-y-1">
-              {formData.education.map((edu, idx) => (
-                <li key={idx}>{edu}</li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Skills */}
-        {formData.skills?.length > 0 && (
-          <section>
-            <h2 className="text-xl font-semibold text-teal-700 mb-2">Skills</h2>
-            <ul className="flex flex-wrap gap-2 text-gray-800">
-              {formData.skills.map((skill, idx) => (
-                <li
-                  key={idx}
-                  className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm"
-                >
-                  {skill}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Languages with Star Rating */}
-        {formData.languages?.length > 0 && (
-          <section>
-            <h2 className="text-xl font-semibold text-teal-700 mb-2">Languages</h2>
-            <div className="space-y-3">
-              {formData.languages.map((lang, idx) => (
-                <div key={idx}>
-                  <div className="flex justify-between text-sm text-gray-700 mb-1">
-                    <span>{lang.name}</span>
-                    <div className="flex">
-                      {[...Array(5)].map((_, starIdx) => (
-                        <svg
-                          key={starIdx}
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill={starIdx < lang.level ? "currentColor" : "none"}
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          className="w-5 h-5 text-teal-500"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 17l3.09 1.545-1.182-3.634L18 10.362l-3.909-.455L12 7l-1.091 2.907L7 10.362l4.091 4.549L9.91 18.545z"
-                          />
-                        </svg>
+          {/* Languages */}
+          {formData.languages?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold border-b pb-2 mb-2">Languages</h2>
+              <ul className="space-y-3">
+                {formData.languages.map((lang, i) => (
+                  <li key={i} className="flex justify-between items-center">
+                    <span className="text-gray-900 font-medium">{lang.name}</span>
+                    <div className="flex space-x-1">
+                      {[...Array(5)].map((_, idx) => (
+                        <span
+                          key={idx}
+                          className={
+                            idx < lang.level
+                              ? 'w-3 h-3 rounded-full bg-blue-600'
+                              : 'w-3 h-3 rounded-full bg-gray-300'
+                          }
+                        />
                       ))}
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
-        {/* Certifications */}
-        {formData.certifications?.length > 0 && (
-          <section>
-            <h2 className="text-xl font-semibold text-teal-700 mb-2">Certifications</h2>
-            <ul className="list-disc list-inside text-gray-800 space-y-1">
-              {formData.certifications.map((cert, idx) => (
-                <li key={idx}>{cert}</li>
-              ))}
-            </ul>
-          </section>
-        )}
+          {/* Certifications */}
+          {formData.certifications?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold border-b pb-2 mb-2">Certifications</h2>
+              <ul className="list-disc list-inside space-y-1 text-gray-800">
+                {formData.certifications.map((c, i) => (
+                  <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
 
-        {/* Achievements */}
-        {formData.achievements?.length > 0 && (
-          <section>
-            <h2 className="text-xl font-semibold text-teal-700 mb-2">Achievements</h2>
-            <ul className="list-disc list-inside text-gray-800 space-y-1">
-              {formData.achievements.map((ach, idx) => (
-                <li key={idx}>{ach}</li>
-              ))}
-            </ul>
-          </section>
-        )}
+        {/* Right Column */}
+        <div className="space-y-8">
+          {/* Summary */}
+          {formData.summary && (
+            <section>
+              <h2 className="text-xl font-semibold border-b pb-2 mb-2">Summary</h2>
+              <p className="text-gray-700">{formData.summary}</p>
+            </section>
+          )}
+
+          {/* Experience */}
+          {formData.experiences?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold border-b pb-2 mb-2">Experience</h2>
+              <ul className="list-disc list-inside space-y-2 text-gray-700">
+                {formData.experiences.map((exp, i) => (
+                  <li key={i}>{exp}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Projects */}
+          {formData.projects?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold border-b pb-2 mb-2">Projects</h2>
+              <ul className="list-disc list-inside space-y-2 text-gray-700">
+                {formData.projects.map((p, i) => (
+                  <li key={i}>
+                    {p.name}
+                    {p.git && (
+                      <a href={p.git} className="ml-2 text-blue-600 hover:underline">
+                        <Github className="w-4 h-4 inline" />
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Education */}
+          {formData.education?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold border-b pb-2 mb-2">Education</h2>
+              <ul className="space-y-4 text-gray-800">
+                {formData.education.map((edu, i) => (
+                  <li key={i} className="bg-gray-50 p-4 rounded-lg">
+                    <p className="font-medium text-lg text-gray-900">{edu.institution}</p>
+                    <p className="text-sm text-blue-600 mb-1">{edu.degree}</p>
+                    <p className="text-sm">
+                      {edu.from} &ndash; {edu.to} &bull; GPA: {edu.aggregate}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
       </div>
     </div>
   );
